@@ -39,11 +39,15 @@ struct CommentsViewModel: CommentsProtocol {
     private func formatComment(_ comment: Comment) -> String {
         var formattedCommentText: NSAttributedString = NSAttributedString(string: "Unable to load comment")
         let dataFromText = comment.text.data(using: .utf8)
-        do {
-            formattedCommentText = try NSAttributedString(data: dataFromText!, options: [.documentType: NSAttributedString.DocumentType.html, .characterEncoding: String.Encoding.utf8.rawValue], documentAttributes: nil)
-        } catch {
-            print("Could not format HTML text: \(error.localizedDescription)")
+
+        if let data = dataFromText {
+            do {
+                formattedCommentText = try NSAttributedString(data: data, options: [.documentType: NSAttributedString.DocumentType.html, .characterEncoding: String.Encoding.utf8.rawValue], documentAttributes: nil)
+            } catch {
+                print("Could not format HTML text: \(error.localizedDescription)")
+            }
         }
+
         return "\(comment.by):\n \(formattedCommentText.string)"
     }
 }
